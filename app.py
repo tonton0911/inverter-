@@ -585,7 +585,7 @@ def _decode_table_rows(
 # ═══════════════════════════════════════════════════════════════════════════
 
 with st.sidebar:
-    st.markdown("## 🔌 Modbus RTU Inspector")
+    st.markdown("## Modbus RTU Inspector")
     st.divider()
 
     # Inverter profile
@@ -602,7 +602,7 @@ with st.sidebar:
     # Connection mode
     mode = st.radio(
         "Connection Mode",
-        ["🔌 Live Serial", "📂 Demo / Offline"],
+        ["🔌 Live Serial", "Demo / Offline"],
         help="Demo mode works without hardware. Uses the selected profile's demo data.",
     )
     live_mode = mode.startswith("🔌")
@@ -625,8 +625,8 @@ with st.sidebar:
 
     st.divider()
     st.caption(
-        "⚠️ Min poll interval: **1 s**\n"
-        "⚠️ EEprom registers have limited write cycles"
+        "Min poll interval: **1 s**\n"
+        "EEprom registers have limited write cycles"
     )
 
 # Session state — last raw response (shared between tabs)
@@ -648,7 +648,7 @@ if "history" not in st.session_state:
 # TABS
 # ═══════════════════════════════════════════════════════════════════════════
 
-tab_labels = ["🛠  Frame Builder", "🔍  Response Decoder", "📊  Dashboard", "📋  Bulk Scan"]
+tab_labels = ["Frame Builder", "Response Decoder", "Dashboard", "Bulk Scan"]
 tab1, tab2, tab3, tab4 = st.tabs(tab_labels)
 
 
@@ -656,16 +656,16 @@ tab1, tab2, tab3, tab4 = st.tabs(tab_labels)
 # ║  TAB 1 — FRAME BUILDER & SENDER  (primary function)                    ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 with tab1:
-    st.markdown("## 🛠 Frame Builder & Sender")
+    st.markdown("Frame Builder & Sender")
     st.caption(
         "Build any Modbus RTU frame manually. Send it live or inspect the constructed bytes. "
         "The last response is forwarded to the **Response Decoder** tab automatically."
     )
 
     if not live_mode:
-        st.info("📂 Offline mode — frame preview is available but sending is disabled.")
+        st.info("Offline mode — frame preview is available but sending is disabled.")
 
-    with st.expander("📖 Modbus RTU Frame Structure"):
+    with st.expander("Modbus RTU Frame Structure"):
         st.markdown("""
 | Field | Bytes | Notes |
 |---|---|---|
@@ -709,7 +709,7 @@ with tab1:
         st.warning(f"Frame build error: {exc}")
 
     send_disabled = frame_preview is None or not live_mode
-    send_btn = st.button("🚀 Send Frame(s)", disabled=send_disabled, use_container_width=True)
+    send_btn = st.button("Send Frame(s)", disabled=send_disabled, use_container_width=True)
 
     if send_btn and frame_preview:
         log_rows = []
@@ -729,7 +729,7 @@ with tab1:
                     "#": i + 1,
                     "Sent":     frame.hex(" ").upper(),
                     "Response": resp.hex(" ").upper(),
-                    "CRC":      "✅" if ok else "❌",
+                    "CRC":      "Received" if ok else "X",
                     "Bytes":    len(resp),
                 })
             else:
@@ -749,14 +749,14 @@ with tab1:
             st.session_state.last_frame_sent = frame_preview.hex(" ").upper()
             st.session_state.last_start_reg  = reg_b
             st.session_state.last_fc         = fc_b
-            st.success("✅ Response forwarded to **Response Decoder** tab.")
+            st.success("Response forwarded to **Response Decoder** tab.")
 
 
 # ╔══════════════════════════════════════════════════════════════════════════╗
 # ║  TAB 2 — RESPONSE DECODER  (optional, profile-aware)                   ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 with tab2:
-    st.markdown("## 🔍 Response Decoder")
+    st.markdown("##Response Decoder")
     st.caption(
         "Paste a raw hex response or use the one forwarded from the Frame Builder. "
         "If a profile is selected, registers are decoded with scaling and enum labels. "
@@ -824,7 +824,7 @@ with tab2:
             m1.metric("Slave ID",      f"0x{slave_r:02X} ({slave_r})")
             m2.metric("Function Code", f"0x{fc_r:02X}")
             m3.metric("Total Bytes",   len(raw_b))
-            m4.metric("CRC",           "✅ Valid" if is_ok else "❌ Invalid")
+            m4.metric("CRC",           "Valid" if is_ok else "Invalid")
 
             if fc_r in (0x83, 0x84):
                 st.error(f"Exception response — error code: 0x{raw_b[2]:02X}")
@@ -955,7 +955,7 @@ with tab2:
                         all_rows.append(entry)
 
                 if errors:
-                    with st.expander(f"⚠️ {len(errors)} parsing errors"):
+                    with st.expander(f"{len(errors)} parsing errors"):
                         for e in errors:
                             st.caption(e)
 
@@ -964,7 +964,7 @@ with tab2:
                     st.markdown(f"#### {len(df_dec)} register values decoded")
                     st.dataframe(df_dec, use_container_width=True, hide_index=True)
                     st.download_button(
-                        "⬇️ Download CSV", df_dec.to_csv(index=False),
+                        "Download CSV", df_dec.to_csv(index=False),
                         f"decoded_{datetime.now():%Y%m%d_%H%M%S}.csv", "text/csv",
                     )
 
@@ -973,7 +973,7 @@ with tab2:
 # ║  TAB 3 — DASHBOARD  (profile-specific, optional)                       ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 with tab3:
-    st.markdown("## 📊 Dashboard")
+    st.markdown("##Dashboard")
 
     if profile is None:
         st.info(
@@ -995,7 +995,7 @@ with tab3:
     with cc2:
         auto_refresh = st.toggle("Auto-refresh", value=False)
     with cc3:
-        do_poll = st.button("🔄 Poll Now", use_container_width=True)
+        do_poll = st.button("Poll Now", use_container_width=True)
 
     if auto_refresh:
         time.sleep(poll_interval)
@@ -1006,7 +1006,7 @@ with tab3:
     if not live_mode:
         if profile.demo_words:
             snap = profile.build_snapshot(profile.demo_words)
-            st.info("📂 Demo data — switch to **Live Serial** to poll hardware.")
+            st.info("Demo data — switch to **Live Serial** to poll hardware.")
         else:
             st.warning("No demo data defined for this profile.")
     elif do_poll or auto_refresh:
@@ -1017,10 +1017,10 @@ with tab3:
         if words:
             snap = profile.build_snapshot(words)
         else:
-            st.error("❌ No response from inverter. Check cable, port, and baud rate.")
+            st.error("No response from inverter. Check cable, port, and baud rate.")
 
     if snap is None:
-        st.info("Press **🔄 Poll Now** or enable **Auto-refresh** to load data.")
+        st.info("Press **Poll Now** or enable **Auto-refresh** to load data.")
         st.stop()
 
     # Update trend history
@@ -1046,7 +1046,7 @@ with tab3:
     st.divider()
 
     # ── PV ─────────────────────────────────────────────────────────────────
-    _section("☀️  Solar PV")
+    _section("Solar PV")
     p1, p2, p3 = st.columns(3)
     with p1:
         st.markdown("**String 1**")
@@ -1068,7 +1068,7 @@ with tab3:
     st.divider()
 
     # ── Battery ────────────────────────────────────────────────────────────
-    _section("🔋  Battery")
+    _section("Battery")
     b1, b2, b3, b4, b5 = st.columns(5)
     b1.metric("Voltage",     _fmt(snap.get("bat_voltage"), "V"))
     b2.metric("Current",     _fmt(snap.get("bat_current"), "A"), help="+chg / −dis")
@@ -1107,7 +1107,7 @@ with tab3:
     st.divider()
 
     # ── Energy ─────────────────────────────────────────────────────────────
-    _section("⚡  Energy Today")
+    _section("Energy Today")
     e1, e2, e3, e4 = st.columns(4)
     e1.metric("Yield (AC)",    _fmt(snap.get("yield_today"),   "kWh"))
     e2.metric("Solar",         _fmt(snap.get("solar_today"),   "kWh"))
@@ -1117,7 +1117,7 @@ with tab3:
     st.divider()
 
     # ── Faults ─────────────────────────────────────────────────────────────
-    _section("⚠️  Fault Status")
+    _section("Fault Status")
     fault_maps = profile.fault_bit_maps
     fault_cols = st.columns(max(len(fault_maps), 1))
     for col, (title, bmap) in zip(fault_cols, fault_maps.items()):
@@ -1137,7 +1137,7 @@ with tab3:
 
     # ── Trend ──────────────────────────────────────────────────────────────
     if len(h["ts"]) > 1:
-        _section("📈  Trend  (last 60 polls)")
+        _section("Trend  (last 60 polls)")
         df_trend = pd.DataFrame({
             "Time":        list(h["ts"]),
             "PV Power W":  list(h["pv_power"]),
@@ -1165,7 +1165,7 @@ with tab3:
 # ║  TAB 4 — BULK REGISTER SCAN                                            ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 with tab4:
-    st.markdown("## 📋 Bulk Register Scan")
+    st.markdown("##Bulk Register Scan")
     st.caption(
         "Scan a range of registers in chunks. "
         "Useful for discovering unknown registers or verifying a full register map. "
@@ -1186,7 +1186,7 @@ with tab4:
     with sc3:
         scan_chunk = st.number_input("Chunk size (registers per request)", 1, 50, 20)
         st.markdown("<br>", unsafe_allow_html=True)
-        do_scan = st.button("▶️ Start Scan", use_container_width=True)
+        do_scan = st.button("Start Scan", use_container_width=True)
 
     if do_scan:
         try:
@@ -1256,7 +1256,7 @@ with tab4:
                     f"(0x{start_a:04X} – 0x{end_a:04X}, FC 0x{scan_fc:02X})")
         st.dataframe(df_scan, use_container_width=True, hide_index=True)
         st.download_button(
-            "⬇️ Download CSV", df_scan.to_csv(index=False),
+            "Download CSV", df_scan.to_csv(index=False),
             f"scan_{datetime.now():%Y%m%d_%H%M%S}.csv", "text/csv",
         )
 
