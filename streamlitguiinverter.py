@@ -144,14 +144,14 @@ class InverterProfile:
     Plug in a new profile to add support for any inverter.
     """
     name:           str
-    input_regs:     dict[int, RegDef]        = field(default_factory=dict)
-    holding_regs:   dict[int, RegDef]        = field(default_factory=dict)
-    input_chunks:   list[tuple[int, int]]    = field(default_factory=list)
-    holding_chunks: list[tuple[int, int]]    = field(default_factory=list)
-    lookups:        dict[str, dict[int, str]]= field(default_factory=dict)
-    fault_bit_maps: dict[str, dict[int, str]]= field(default_factory=dict)
-    demo_words:     dict[int, int]           = field(default_factory=dict)
-    build_snapshot: Optional[Callable]       = field(default=None, compare=False)
+    input_regs:     dict[int, RegDef]         = field(default_factory=dict)
+    holding_regs:   dict[int, RegDef]         = field(default_factory=dict)
+    input_chunks:   list[tuple[int, int]]     = field(default_factory=list)
+    holding_chunks: list[tuple[int, int]]     = field(default_factory=list)
+    lookups:        dict[str, dict[int, str]] = field(default_factory=dict)
+    fault_bit_maps: dict[str, dict[int, str]] = field(default_factory=dict)
+    demo_words:     dict[int, int]            = field(default_factory=dict)
+    build_snapshot: Optional[Callable]        = field(default=None, compare=False)
 
 
 def decode_reg(word_map: dict[int, int], reg: RegDef) -> Optional[float]:
@@ -221,8 +221,8 @@ _SOLAX_INPUT = [
     _r(0x0009, "run_mode",        "Inverter Run Mode",           1.0,   "",    "uint16", "inverter", "run_mode"),
     _r(0x001B, "mppt_count",      "Number of MPPT Channels",     1.0,   "",    "uint16", "inverter"),
     _r(0x0014, "bat_voltage",     "Battery Voltage",             0.1,   "V",   "int16",  "battery"),
-    _r(0x0015, "bat_current",     "Battery Current (+chg/−dis)", 0.1,   "A",   "int16",  "battery"),
-    _r(0x0016, "bat_power",       "Battery Power (+chg/−dis)",   1.0,   "W",   "int16",  "battery"),
+    _r(0x0015, "bat_current",     "Battery Current (+chg/-dis)", 0.1,   "A",   "int16",  "battery"),
+    _r(0x0016, "bat_power",       "Battery Power (+chg/-dis)",   1.0,   "W",   "int16",  "battery"),
     _r(0x0018, "bat_temp",        "Battery Temperature",         1.0,   "°C",  "int16",  "battery"),
     _r(0x001C, "soc",             "State of Charge",             1.0,   "%",   "uint16", "battery"),
     _r(0x0019, "bdc_status",      "Battery Direction",           1.0,   "",    "uint16", "battery",  "bdc_status"),
@@ -239,7 +239,7 @@ _SOLAX_INPUT = [
     _r(0x004D, "offgrid_current", "Off-grid Output Current",     0.1,   "A",   "uint16", "offgrid"),
     _r(0x004E, "offgrid_power",   "Off-grid Output Power",       1.0,   "VA",  "uint16", "offgrid"),
     _r(0x004F, "offgrid_freq",    "Off-grid Output Frequency",   0.01,  "Hz",  "uint16", "offgrid"),
-    _r(0x0050, "yield_today",     "Today Energy — AC Port",      0.1,   "kWh", "uint16", "energy"),
+    _r(0x0050, "yield_today",     "Today Energy - AC Port",      0.1,   "kWh", "uint16", "energy"),
     _r(0x0096, "solar_today",     "Solar Energy Today",          0.1,   "kWh", "uint16", "energy"),
     _r(0x0020, "bat_chg_today",   "Battery Charge Today",        0.1,   "kWh", "uint16", "energy"),
     _r(0x0023, "bat_dis_today",   "Battery Discharge Today",     0.1,   "kWh", "uint16", "energy"),
@@ -302,14 +302,14 @@ _SOLAX_HOLDING = [
 
 _SOLAX_LOOKUPS = {
     "run_mode": {
-        0: "⏳ Waiting",  1: "🔍 Checking", 2: "✅ Normal",
-        3: "⚠️ Fault",    4: "🔴 Perm Fault",5: "🔄 Update",
-        6: "🏝 OG Wait",  7: "🏝 Off-grid",  8: "🧪 Self-test",
-        9: "💤 Idle",    10: "🕹 Standby",
+        0: "Waiting",   1: "Checking",  2: "Normal",
+        3: "Fault",     4: "Perm Fault",5: "Update",
+        6: "OG Wait",   7: "Off-grid",  8: "Self-test",
+        9: "Idle",     10: "Standby",
     },
-    "bdc_status":      {0: "🔋 Discharging", 1: "⚡ Charging", 2: "⏸ Stopped"},
-    "grid_status":     {0: "🟢 On-Grid",      1: "🔴 Off-Grid"},
-    "bms_connected":   {0: "❌ Disconnected", 1: "✅ Connected"},
+    "bdc_status":      {0: "Discharging", 1: "Charging", 2: "Stopped"},
+    "grid_status":     {0: "On-Grid",     1: "Off-Grid"},
+    "bms_connected":   {0: "Disconnected",1: "Connected"},
     "use_mode":        {0: "Self Use", 1: "Feed-in Priority", 2: "Back Up", 3: "Manual"},
     "manual_mode":     {0: "Stop", 1: "Force Charge", 2: "Force Discharge"},
     "battery_type":    {0: "Lead Acid", 1: "Lithium"},
@@ -365,7 +365,7 @@ _SOLAX_DEMO: dict[int, int] = {
     0x00BC: 3650, 0x00BD: 3620,
     0x00BE: 72,   0x00BF: 98,
     0x004C: 0,    0x004D: 0,      0x004E: 0,     0x004F: 0,
-    0x0046: 0xFEE0, 0x0047: 0xFFFF,              # −288 W importing
+    0x0046: 0xFEE0, 0x0047: 0xFFFF,              # -288 W importing
     0x0050: 142,  0x0096: 187,    0x0020: 55,    0x0023: 70,
     0x0091: 45,   0x0090: 0,
     0x003E: 0,    0x003F: 0,      0x0040: 0,     0x0041: 0,
@@ -390,45 +390,45 @@ def _solax_build_snapshot(words: dict[int, int]) -> dict:
     feedin = round(as_int32(feedin_lo, feedin_hi), 0) if (feedin_lo or feedin_hi) else None
 
     return {
-        "timestamp":      datetime.now(),
-        "grid_voltage":   val("grid_voltage"),
-        "grid_current":   val("grid_current"),
-        "grid_power":     val("grid_power"),
-        "grid_frequency": val("grid_frequency"),
-        "grid_status":    raw(0x001A),
-        "feedin_power":   feedin,
-        "pv1_voltage":    val("pv1_voltage"),
-        "pv1_current":    val("pv1_current"),
-        "pv1_power":      val("pv1_power"),
-        "pv2_voltage":    val("pv2_voltage"),
-        "pv2_current":    val("pv2_current"),
-        "pv2_power":      val("pv2_power"),
-        "pv_total":       (val("pv1_power") or 0) + (val("pv2_power") or 0),
-        "bat_voltage":    val("bat_voltage"),
-        "bat_current":    val("bat_current"),
-        "bat_power":      val("bat_power"),
-        "bat_temp":       val("bat_temp"),
-        "soc":            raw(0x001C),
-        "bdc_status":     raw(0x0019),
-        "bms_connected":  raw(0x0017),
-        "bms_soc":        val("bms_soc"),
-        "bms_soh":        val("bms_soh"),
-        "cell_v_high":    val("cell_v_high"),
-        "cell_v_low":     val("cell_v_low"),
-        "inv_temp":       val("inv_temp"),
-        "run_mode":       raw(0x0009),
-        "yield_today":    val("yield_today"),
-        "solar_today":    val("solar_today"),
-        "bat_chg_today":  val("bat_chg_today"),
-        "echarge_today":  val("echarge_today"),
-        "offgrid_today":  val("offgrid_today"),
-        "offgrid_voltage":val("offgrid_voltage"),
-        "offgrid_power":  val("offgrid_power"),
-        "inv_fault_word": (raw(0x0041) << 16) | raw(0x0040),
-        "bms_fault_word": (raw(0x0045) << 16) | raw(0x0044),
-        "pcs_fault":      raw(0x003E),
-        "mgr_fault":      raw(0x0043),
-        "_words":         words,
+        "timestamp":       datetime.now(),
+        "grid_voltage":    val("grid_voltage"),
+        "grid_current":    val("grid_current"),
+        "grid_power":      val("grid_power"),
+        "grid_frequency":  val("grid_frequency"),
+        "grid_status":     raw(0x001A),
+        "feedin_power":    feedin,
+        "pv1_voltage":     val("pv1_voltage"),
+        "pv1_current":     val("pv1_current"),
+        "pv1_power":       val("pv1_power"),
+        "pv2_voltage":     val("pv2_voltage"),
+        "pv2_current":     val("pv2_current"),
+        "pv2_power":       val("pv2_power"),
+        "pv_total":        (val("pv1_power") or 0) + (val("pv2_power") or 0),
+        "bat_voltage":     val("bat_voltage"),
+        "bat_current":     val("bat_current"),
+        "bat_power":       val("bat_power"),
+        "bat_temp":        val("bat_temp"),
+        "soc":             raw(0x001C),
+        "bdc_status":      raw(0x0019),
+        "bms_connected":   raw(0x0017),
+        "bms_soc":         val("bms_soc"),
+        "bms_soh":         val("bms_soh"),
+        "cell_v_high":     val("cell_v_high"),
+        "cell_v_low":      val("cell_v_low"),
+        "inv_temp":        val("inv_temp"),
+        "run_mode":        raw(0x0009),
+        "yield_today":     val("yield_today"),
+        "solar_today":     val("solar_today"),
+        "bat_chg_today":   val("bat_chg_today"),
+        "echarge_today":   val("echarge_today"),
+        "offgrid_today":   val("offgrid_today"),
+        "offgrid_voltage": val("offgrid_voltage"),
+        "offgrid_power":   val("offgrid_power"),
+        "inv_fault_word":  (raw(0x0041) << 16) | raw(0x0040),
+        "bms_fault_word":  (raw(0x0045) << 16) | raw(0x0044),
+        "pcs_fault":       raw(0x003E),
+        "mgr_fault":       raw(0x0043),
+        "_words":          words,
     }
 
 
@@ -474,110 +474,105 @@ PROFILES: dict[str, Optional[InverterProfile]] = {
 
 st.set_page_config(
     page_title="Modbus RTU Inspector",
-    page_icon="🔌",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 st.markdown("""
 <style>
+  /* Metric cards */
   [data-testid="metric-container"] {
-      background:#1a1f2e; border:1px solid #2d3448;
-      border-radius:10px; padding:12px 16px;
+      background: #1c1c1c;
+      border: 1px solid #2e2e2e;
+      border-radius: 6px;
+      padding: 12px 16px;
   }
-  [data-testid="stMetricLabel"] { font-size:0.72rem; color:#8892a4; }
-  [data-testid="stMetricValue"] { font-size:1.35rem; font-weight:700; }
-  [data-testid="stMetricDelta"] { font-size:0.72rem; }
-  [data-testid="stTabs"] button[role="tab"] { font-weight:600; }
-  [data-testid="stSidebar"] { background:#111827; }
+  [data-testid="stMetricLabel"] { font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
+  [data-testid="stMetricValue"] { font-size: 1.3rem; font-weight: 600; color: #e0e0e0; }
+  [data-testid="stMetricDelta"] { font-size: 0.72rem; }
 
+  /* Tabs */
+  [data-testid="stTabs"] button[role="tab"] { font-weight: 500; font-size: 0.85rem; }
+
+  /* Sidebar */
+  [data-testid="stSidebar"] { background: #141414; }
+
+  /* Section headers */
   .section-header {
-      font-size:0.78rem; font-weight:700; letter-spacing:0.12em;
-      text-transform:uppercase; color:#64748b;
-      margin:18px 0 8px 0; padding-bottom:4px; border-bottom:1px solid #2d3448;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #555;
+      margin: 20px 0 10px 0;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #2a2a2a;
   }
-  .badge-ok   { background:#16a34a22; color:#4ade80; border:1px solid #16a34a;
-                border-radius:20px; padding:2px 10px; font-size:0.78rem; font-weight:600; }
-  .badge-warn { background:#d9770622; color:#fb923c; border:1px solid #d97706;
-                border-radius:20px; padding:2px 10px; font-size:0.78rem; font-weight:600; }
-  .badge-err  { background:#dc262622; color:#f87171; border:1px solid #dc2626;
-                border-radius:20px; padding:2px 10px; font-size:0.78rem; font-weight:600; }
-  .soc-wrap { background:#1e2535; border-radius:8px; height:22px;
-              margin:4px 0 14px 0; overflow:hidden; }
-  .soc-fill { height:100%; border-radius:8px; display:flex;
-              align-items:center; justify-content:center;
-              color:#fff; font-size:12px; font-weight:700; transition:width .6s ease; }
+
+  /* Status badges */
+  .badge-ok   { background: transparent; color: #aaa;
+                border: 1px solid #3a3a3a; border-radius: 4px;
+                padding: 2px 10px; font-size: 0.78rem; }
+  .badge-warn { background: transparent; color: #c8922a;
+                border: 1px solid #c8922a; border-radius: 4px;
+                padding: 2px 10px; font-size: 0.78rem; }
+  .badge-err  { background: transparent; color: #b85c5c;
+                border: 1px solid #b85c5c; border-radius: 4px;
+                padding: 2px 10px; font-size: 0.78rem; }
+
+  /* SOC bar */
+  .soc-wrap { background: #222; border-radius: 4px; height: 18px;
+              margin: 4px 0 16px 0; overflow: hidden; }
+  .soc-fill { height: 100%; border-radius: 4px; display: flex;
+              align-items: center; justify-content: center;
+              color: #ccc; font-size: 11px; font-weight: 600;
+              transition: width 0.5s ease; }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ── Small UI helpers ───────────────────────────────────────────────────────
+
 def _section(label: str):
     st.markdown(f'<div class="section-header">{label}</div>', unsafe_allow_html=True)
 
+
 def _badge(text: str, level: str = "ok"):
-    cls = {"ok":"badge-ok","warn":"badge-warn","err":"badge-err"}.get(level,"badge-ok")
+    cls = {"ok": "badge-ok", "warn": "badge-warn", "err": "badge-err"}.get(level, "badge-ok")
     st.markdown(f'<span class="{cls}">{text}</span>', unsafe_allow_html=True)
+
 
 def _soc_bar(pct: int):
     pct = max(0, min(100, int(pct)))
-    color = "#22c55e" if pct > 50 else ("#f59e0b" if pct > 20 else "#ef4444")
+    # Monochrome: light fill when high, dims as it drops
+    if pct > 50:
+        color = "#555"
+    elif pct > 20:
+        color = "#4a4a4a"
+    else:
+        color = "#7a3a3a"   # only hint of color at critically low SOC
     st.markdown(
         f'<div class="soc-wrap"><div class="soc-fill" style="width:{pct}%;background:{color};">'
-        f'{pct}%</div></div>', unsafe_allow_html=True,
+        f'{pct}%</div></div>',
+        unsafe_allow_html=True,
     )
+
 
 def _fault_expander(title: str, word32: int, bit_map: dict[int, str]):
     faults = active_faults(word32, bit_map)
     if faults:
-        with st.expander(f"⚠️ {title}  —  {len(faults)} active"):
+        with st.expander(f"{title} — {len(faults)} active fault(s)"):
             for f in faults:
-                st.markdown(f"- 🔴 **{f}**")
+                st.markdown(f"- {f}")
     else:
-        _badge(f"✅ {title}: No Faults", "ok")
+        _badge(f"{title}: OK", "ok")
+
 
 def _fmt(value, unit: str = "") -> str:
     if value is None:
         return "—"
     return f"{value} {unit}".strip()
-
-def _decode_table_rows(
-    words: dict[int, int],
-    reg_map: dict[int, RegDef],
-    profile: InverterProfile,
-    start: Optional[int] = None,
-) -> list[dict]:
-    """Build decode table rows from a word map, optionally restricted to a start address."""
-    rows = []
-    for idx, w in enumerate(words.values()) if start is None else []:
-        pass
-
-    addrs = sorted(words.keys()) if start is None else range(start, start + len(words))
-    for addr in addrs:
-        w = words.get(addr) if start is None else list(words.values())[addr - start] if isinstance(words, dict) else words[addr]
-        if w is None:
-            continue
-        row: dict = {
-            "Address": f"0x{addr:04X}",
-            "uint16":  w,
-            "int16":   as_int16(w),
-            "Hex":     f"0x{w:04X}",
-            "×0.1":   round(w * 0.1, 1),
-            "×0.01":  round(w * 0.01, 2),
-        }
-        if addr in reg_map:
-            reg    = reg_map[addr]
-            scaled = decode_reg({addr: w}, reg)
-            label  = resolve_label(profile, reg, w)
-            row.update({
-                "Name":        reg.name,
-                "Category":    reg.category,
-                "Scaled":      _fmt(scaled, reg.unit),
-                "Value":       label or _fmt(scaled, reg.unit),
-                "Description": reg.desc,
-            })
-        rows.append(row)
-    return rows
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -585,38 +580,35 @@ def _decode_table_rows(
 # ═══════════════════════════════════════════════════════════════════════════
 
 with st.sidebar:
-    st.markdown("## Modbus RTU Inspector")
+    st.markdown("### Modbus RTU Inspector")
     st.divider()
 
-    # Inverter profile
     profile_name = st.selectbox("Inverter Profile", list(PROFILES.keys()))
     profile: Optional[InverterProfile] = PROFILES[profile_name]
 
     if profile:
-        st.caption(f"Profile loaded: **{profile.name}**")
+        st.caption(f"Profile: {profile.name}")
     else:
-        st.caption("No profile — raw Modbus only.")
+        st.caption("No profile selected — raw mode only.")
 
     st.divider()
 
-    # Connection mode
     mode = st.radio(
-        "Connection Mode",
-        ["🔌 Live Serial", "Demo / Offline"],
-        help="Demo mode works without hardware. Uses the selected profile's demo data.",
+        "Connection",
+        ["Live Serial", "Demo / Offline"],
+        help="Demo mode uses the profile's built-in sample data.",
     )
-    live_mode = mode.startswith("🔌")
+    live_mode = mode == "Live Serial"
 
     if live_mode and not SERIAL_AVAILABLE:
-        st.error("pyserial not installed — `pip install pyserial`")
+        st.error("pyserial not installed.\npip install pyserial")
         live_mode = False
 
     if live_mode:
         ports = [p.device for p in serial.tools.list_ports.comports()] or ["COM4"]
         default_port = "COM4" if "COM4" in ports else ports[0]
-        port     = st.selectbox("Serial Port", ports, index=ports.index(default_port))
-        baud     = st.selectbox("Baud Rate", list(VALID_BAUDS),
-                                index=list(VALID_BAUDS).index(9600))
+        port     = st.selectbox("Port",     ports, index=ports.index(default_port))
+        baud     = st.selectbox("Baud",     list(VALID_BAUDS), index=list(VALID_BAUDS).index(9600))
         slave_id = st.number_input("Slave ID", 1, 247, 1)
         timeout  = st.slider("Timeout (s)", 0.5, 5.0, 1.0, 0.5)
         retries  = st.number_input("Retries", 0, 5, 2)
@@ -624,20 +616,14 @@ with st.sidebar:
         port, baud, slave_id, timeout, retries = "COM4", 9600, 1, 1.0, 2
 
     st.divider()
-    st.caption(
-        "Min poll interval: **1 s**\n"
-        "EEprom registers have limited write cycles"
-    )
+    st.caption("Min poll interval: 1 s\nEEprom registers have limited write cycles.")
 
-# Session state — last raw response (shared between tabs)
-if "last_response" not in st.session_state:
-    st.session_state.last_response = None
-if "last_frame_sent" not in st.session_state:
-    st.session_state.last_frame_sent = None
-if "last_start_reg" not in st.session_state:
-    st.session_state.last_start_reg = None
-if "last_fc" not in st.session_state:
-    st.session_state.last_fc = None
+
+# ── Session state ──────────────────────────────────────────────────────────
+for _k in ("last_response", "last_frame_sent", "last_start_reg", "last_fc"):
+    if _k not in st.session_state:
+        st.session_state[_k] = None
+
 if "history" not in st.session_state:
     st.session_state.history = {
         k: deque(maxlen=60) for k in ("ts", "pv_power", "bat_power", "grid_power", "soc")
@@ -648,70 +634,62 @@ if "history" not in st.session_state:
 # TABS
 # ═══════════════════════════════════════════════════════════════════════════
 
-tab_labels = ["Frame Builder", "Response Decoder", "Dashboard", "Bulk Scan"]
-tab1, tab2, tab3, tab4 = st.tabs(tab_labels)
+tab1, tab2, tab3, tab4 = st.tabs([
+    "Frame Builder",
+    "Response Decoder",
+    "Dashboard",
+    "Bulk Scan",
+])
 
 
 # ╔══════════════════════════════════════════════════════════════════════════╗
-# ║  TAB 1 — FRAME BUILDER & SENDER  (primary function)                    ║
+# ║  TAB 1 — FRAME BUILDER                                                 ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 with tab1:
-    st.markdown("Frame Builder & Sender")
-    st.caption(
-        "Build any Modbus RTU frame manually. Send it live or inspect the constructed bytes. "
-        "The last response is forwarded to the **Response Decoder** tab automatically."
-    )
+    st.markdown("#### Frame Builder")
+    st.caption("Build and send any Modbus RTU frame. The last response is forwarded to the Response Decoder tab.")
 
     if not live_mode:
         st.info("Offline mode — frame preview is available but sending is disabled.")
 
-    with st.expander("Modbus RTU Frame Structure"):
+    with st.expander("Frame structure reference"):
         st.markdown("""
 | Field | Bytes | Notes |
 |---|---|---|
-| Slave ID | 1 | `0x01` default |
-| Function Code | 1 | `0x03` Holding · `0x04` Input · `0x06` Write Single |
+| Slave ID | 1 | Default `0x01` |
+| Function Code | 1 | `0x03` Holding / `0x04` Input / `0x06` Write Single |
 | Register (MSB) | 1 | High byte of start address |
 | Register (LSB) | 1 | Low byte |
 | Count / Value (MSB) | 1 | Number of registers to read, or write value high byte |
 | Count / Value (LSB) | 1 | |
-| CRC-16 Low | 1 | Modbus CRC-16, auto-computed |
+| CRC-16 Low | 1 | Auto-computed |
 | CRC-16 High | 1 | |
 """)
 
     c1, c2 = st.columns(2)
     with c1:
-        fb_fc = st.selectbox("Function Code", [
+        fb_fc  = st.selectbox("Function Code", [
             "0x03 — Read Holding",
             "0x04 — Read Input",
             "0x06 — Write Single Register",
         ])
-        fb_reg = st.text_input("Register Address (hex)", value="0000",
-                               placeholder="e.g. 0046")
-        fb_val = st.number_input(
-            "Count (read) / Value (write)", min_value=0, max_value=65535, value=1,
-            help="For read: number of registers. For write: value to write.",
-        )
+        fb_reg = st.text_input("Register (hex)", value="0000", placeholder="e.g. 0046")
+        fb_val = st.number_input("Count (read) / Value (write)", min_value=0, max_value=65535, value=1)
     with c2:
-        fb_rpt     = st.number_input("Repeat", 1, 50, 1)
-        fb_delay   = st.number_input("Delay between repeats (ms)", 100, 5000, 500)
-        fb_raw_only= st.checkbox("Skip auto-decode on response", value=False,
-                                 help="Show raw hex only; don't forward to decoder.")
+        fb_rpt      = st.number_input("Repeat", 1, 50, 1)
+        fb_delay    = st.number_input("Delay between repeats (ms)", 100, 5000, 500)
+        fb_raw_only = st.checkbox("Raw hex only — skip auto-decode")
 
-    # Frame preview
     frame_preview: Optional[bytes] = None
     try:
-        fc_b   = int(fb_fc[:4], 16)
-        reg_b  = int(fb_reg.strip(), 16)
+        fc_b          = int(fb_fc[:4], 16)
+        reg_b         = int(fb_reg.strip(), 16)
         frame_preview = build_frame(int(slave_id), fc_b, reg_b, int(fb_val))
-        st.code(f"Frame ({len(frame_preview)} bytes):  {frame_preview.hex(' ').upper()}")
+        st.code(f"{frame_preview.hex(' ').upper()}  ({len(frame_preview)} bytes)")
     except Exception as exc:
         st.warning(f"Frame build error: {exc}")
 
-    send_disabled = frame_preview is None or not live_mode
-    send_btn = st.button("Send Frame(s)", disabled=send_disabled, use_container_width=True)
-
-    if send_btn and frame_preview:
+    if st.button("Send", disabled=(frame_preview is None or not live_mode), use_container_width=True):
         log_rows = []
         prog = st.progress(0)
         last_resp = None
@@ -726,10 +704,10 @@ with tab1:
                 ok = crc_valid(resp, fc_b)
                 last_resp = resp
                 log_rows.append({
-                    "#": i + 1,
+                    "#":        i + 1,
                     "Sent":     frame.hex(" ").upper(),
                     "Response": resp.hex(" ").upper(),
-                    "CRC":      "Received" if ok else "X",
+                    "CRC":      "OK" if ok else "FAIL",
                     "Bytes":    len(resp),
                 })
             else:
@@ -743,28 +721,27 @@ with tab1:
 
         st.dataframe(pd.DataFrame(log_rows), use_container_width=True, hide_index=True)
 
-        # Forward last good response to decoder tab
         if last_resp and not fb_raw_only:
-            st.session_state.last_response  = last_resp.hex(" ").upper()
+            st.session_state.last_response   = last_resp.hex(" ").upper()
             st.session_state.last_frame_sent = frame_preview.hex(" ").upper()
             st.session_state.last_start_reg  = reg_b
             st.session_state.last_fc         = fc_b
-            st.success("Response forwarded to **Response Decoder** tab.")
+            st.success("Response forwarded to Response Decoder tab.")
 
 
 # ╔══════════════════════════════════════════════════════════════════════════╗
-# ║  TAB 2 — RESPONSE DECODER  (optional, profile-aware)                   ║
+# ║  TAB 2 — RESPONSE DECODER                                              ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 with tab2:
-    st.markdown("##Response Decoder")
+    st.markdown("#### Response Decoder")
     st.caption(
         "Paste a raw hex response or use the one forwarded from the Frame Builder. "
-        "If a profile is selected, registers are decoded with scaling and enum labels. "
-        "Without a profile, raw numeric interpretations are shown."
+        "Register names and scaled values are shown when a profile is selected."
     )
 
     dec_source = st.radio(
-        "Input", ["Use last Frame Builder response", "Paste hex manually", "Upload Excel"],
+        "Source",
+        ["Last Frame Builder response", "Paste hex"],
         horizontal=True,
     )
 
@@ -772,24 +749,24 @@ with tab2:
     start_reg: Optional[int] = None
     fc_hint   = FC_READ_INPUT
 
-    if dec_source == "Use last Frame Builder response":
+    if dec_source == "Last Frame Builder response":
         if st.session_state.last_response:
             hex_input = st.session_state.last_response
             start_reg = st.session_state.last_start_reg
             fc_hint   = st.session_state.last_fc or FC_READ_INPUT
-            st.code(f"Response:  {hex_input}")
-            st.caption(f"Start reg: 0x{start_reg:04X}  |  FC: 0x{fc_hint:02X}")
+            st.code(hex_input)
+            st.caption(f"Start reg: 0x{start_reg:04X}   FC: 0x{fc_hint:02X}")
         else:
-            st.info("No response captured yet. Send a frame in the **Frame Builder** tab first.")
+            st.info("No response yet. Send a frame in the Frame Builder tab first.")
 
-    elif dec_source == "Paste hex manually":
-        with st.expander("📖 Example responses"):
-            st.code("Input regs (faults):    01 04 06 00 00 00 00 00 00 60 93")
-            st.code("Holding regs (SN):      01 03 0E 48 34 37 35 32 32 5A 48 45 4E 47 57 45 4E 63 26")
-            st.code("Write single (ack):     01 06 00 1F 00 00 48 0A")
+    elif dec_source == "Paste hex":
+        with st.expander("Example responses"):
+            st.code("Input regs:      01 04 06 00 00 00 00 00 00 60 93")
+            st.code("Holding regs:    01 03 0E 48 34 37 35 32 32 5A 48 45 4E 47 57 45 4E 63 26")
+            st.code("Write single:    01 06 00 1F 00 00 48 0A")
 
-        hex_input = st.text_area("Hex bytes (spaces / colons optional)",
-                                 placeholder="01 04 14 00 EB …", height=80)
+        hex_input = st.text_area("Hex bytes (spaces or colons optional)",
+                                 placeholder="01 04 14 00 EB ...", height=80)
         rc1, rc2 = st.columns(2)
         with rc1:
             start_hex = st.text_input("Start register (hex)", placeholder="e.g. 0000")
@@ -801,9 +778,8 @@ with tab2:
             fc_label = st.selectbox("Function code", ["0x04 Input", "0x03 Holding", "0x06 Write"])
             fc_hint  = int(fc_label[:4], 16)
 
-    # ── Decode ─────────────────────────────────────────────────────────────
-    if dec_source != "Upload Excel" and hex_input.strip():
-        if st.button("🔬 Decode", use_container_width=True):
+    if hex_input.strip():
+        if st.button("Decode", use_container_width=True):
             clean = hex_input.replace(" ", "").replace(":", "").replace("-", "")
             try:
                 raw_b = bytes.fromhex(clean)
@@ -830,13 +806,8 @@ with tab2:
                 st.error(f"Exception response — error code: 0x{raw_b[2]:02X}")
 
             elif fc_r in (FC_READ_INPUT, FC_READ_HOLDING):
-                words = parse_words(raw_b)
-                st.markdown(f"**{len(words)} register(s) in response**")
-
-                if profile:
-                    ref_map = profile.input_regs if fc_r == FC_READ_INPUT else profile.holding_regs
-                else:
-                    ref_map = {}
+                words   = parse_words(raw_b)
+                ref_map = (profile.input_regs if fc_r == FC_READ_INPUT else profile.holding_regs) if profile else {}
 
                 rows = []
                 for idx, w in enumerate(words):
@@ -847,8 +818,8 @@ with tab2:
                         "uint16":  w,
                         "int16":   as_int16(w),
                         "Hex":     f"0x{w:04X}",
-                        "×0.1":   round(w * 0.1, 1),
-                        "×0.01":  round(w * 0.01, 2),
+                        "x0.1":    round(w * 0.1, 1),
+                        "x0.01":   round(w * 0.01, 2),
                     }
                     if start_reg is not None and addr in ref_map and profile:
                         reg    = ref_map[addr]
@@ -863,14 +834,13 @@ with tab2:
                         })
                     rows.append(row)
 
+                st.markdown(f"{len(words)} register(s)")
                 st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
-                # ASCII block — useful for SN / name registers
                 try:
-                    chars = b"".join(bytes([(w >> 8) & 0xFF, w & 0xFF]) for w in words)
-                    printable = "".join(c if 32 <= ord(c) < 127 else "·"
-                                        for c in chars.decode("latin-1"))
-                    with st.expander("ASCII interpretation"):
+                    chars     = b"".join(bytes([(w >> 8) & 0xFF, w & 0xFF]) for w in words)
+                    printable = "".join(c if 32 <= ord(c) < 127 else "." for c in chars.decode("latin-1"))
+                    with st.expander("ASCII"):
                         st.code(printable)
                 except Exception:
                     pass
@@ -880,122 +850,34 @@ with tab2:
                 val_w = (raw_b[4] << 8) | raw_b[5]
                 _section("Write Acknowledgement")
                 wa, wb = st.columns(2)
-                wa.metric("Register Written", f"0x{reg_a:04X} ({reg_a})")
-                wb.metric("Value Written",    f"0x{val_w:04X} ({val_w})")
+                wa.metric("Register", f"0x{reg_a:04X} ({reg_a})")
+                wb.metric("Value",    f"0x{val_w:04X} ({val_w})")
 
-    # ── Upload Excel ────────────────────────────────────────────────────────
-    elif dec_source == "Upload Excel":
-        st.markdown("### Upload Response Log (.xlsx)")
-        st.caption("Expected columns: **Frame Sent**, **Response**")
 
-        uploaded = st.file_uploader("Select file", type=["xlsx", "xls"])
-        if uploaded:
-            try:
-                df_xl = pd.read_excel(uploaded)
-            except Exception as exc:
-                st.error(f"Cannot read file: {exc}")
-                st.stop()
-
-            st.markdown(f"**{len(df_xl)} rows**")
-            st.dataframe(df_xl.head(5), use_container_width=True, hide_index=True)
-
-            if not {"Frame Sent", "Response"}.issubset(df_xl.columns):
-                st.error("Expected columns: 'Frame Sent' and 'Response'")
-                st.stop()
-
-            xl_fc_label = st.radio("Function code in file",
-                                   ["0x04 Input", "0x03 Holding"], horizontal=True)
-            xl_fc   = FC_READ_INPUT if "04" in xl_fc_label else FC_READ_HOLDING
-            ref_map = (profile.input_regs if xl_fc == FC_READ_INPUT else profile.holding_regs) \
-                       if profile else {}
-
-            if st.button("🔬 Decode All Rows", use_container_width=True):
-                all_rows, errors = [], []
-
-                for row_idx, row in df_xl.iterrows():
-                    sent_h = str(row["Frame Sent"]).replace(" ", "").replace("_", "")
-                    resp_h = str(row["Response"]).replace(" ", "")
-
-                    try:
-                        sent_b  = bytes.fromhex(sent_h)
-                        start_r = (sent_b[2] << 8) | sent_b[3]
-                    except Exception:
-                        errors.append(f"Row {row_idx}: bad sent frame '{sent_h}'")
-                        continue
-
-                    if resp_h.upper() in ("NORESPONSE", "NO_RESPONSE", "NONE", "NAN", ""):
-                        all_rows.append({"Row": row_idx, "Start Reg": f"0x{start_r:04X}",
-                                         "Name": "NO RESPONSE"})
-                        continue
-
-                    try:
-                        raw_b = bytes.fromhex(resp_h)
-                        words = parse_words(raw_b)
-                    except Exception as exc:
-                        errors.append(f"Row {row_idx}: parse error — {exc}")
-                        continue
-
-                    for idx, w in enumerate(words):
-                        addr  = start_r + idx
-                        entry: dict = {"Row": row_idx, "Address": f"0x{addr:04X}",
-                                       "Raw": f"0x{w:04X} ({w})"}
-                        if addr in ref_map and profile:
-                            reg    = ref_map[addr]
-                            scaled = decode_reg({addr: w}, reg)
-                            entry.update({
-                                "Name":        reg.name,
-                                "Scaled":      scaled,
-                                "Unit":        reg.unit,
-                                "Value":       resolve_label(profile, reg, w) or _fmt(scaled, reg.unit),
-                                "Description": reg.desc,
-                            })
-                        else:
-                            entry.update({"Name": "—", "Scaled": w,
-                                          "Unit": "", "Value": str(w), "Description": ""})
-                        all_rows.append(entry)
-
-                if errors:
-                    with st.expander(f"{len(errors)} parsing errors"):
-                        for e in errors:
-                            st.caption(e)
-
-                if all_rows:
-                    df_dec = pd.DataFrame(all_rows)
-                    st.markdown(f"#### {len(df_dec)} register values decoded")
-                    st.dataframe(df_dec, use_container_width=True, hide_index=True)
-                    st.download_button(
-                        "Download CSV", df_dec.to_csv(index=False),
-                        f"decoded_{datetime.now():%Y%m%d_%H%M%S}.csv", "text/csv",
-                    )
 
 
 # ╔══════════════════════════════════════════════════════════════════════════╗
-# ║  TAB 3 — DASHBOARD  (profile-specific, optional)                       ║
+# ║  TAB 3 — DASHBOARD                                                     ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 with tab3:
-    st.markdown("##Dashboard")
+    st.markdown("#### Dashboard")
 
     if profile is None:
-        st.info(
-            "Select an inverter profile in the sidebar to enable the dashboard. "
-            "The dashboard renders profile-specific decoded telemetry."
-        )
+        st.info("Select an inverter profile in the sidebar to enable the dashboard.")
         st.stop()
 
     if profile.build_snapshot is None:
-        st.warning(f"Profile **{profile.name}** does not define a dashboard snapshot builder.")
+        st.warning(f"Profile '{profile.name}' does not define a dashboard.")
         st.stop()
 
-    # Only SolaX-style profiles with build_snapshot reach here
-    cc1, cc2, cc3 = st.columns([2, 1, 1])
-    with cc1:
-        poll_interval = st.slider("Auto-refresh (s)", 3, 120, 10,
-                                  label_visibility="collapsed")
-        st.caption(f"Refresh every **{poll_interval} s**")
-    with cc2:
+    dc1, dc2, dc3 = st.columns([2, 1, 1])
+    with dc1:
+        poll_interval = st.slider("Refresh interval (s)", 3, 120, 10, label_visibility="collapsed")
+        st.caption(f"Refresh every {poll_interval} s")
+    with dc2:
         auto_refresh = st.toggle("Auto-refresh", value=False)
-    with cc3:
-        do_poll = st.button("Poll Now", use_container_width=True)
+    with dc3:
+        do_poll = st.button("Poll now", use_container_width=True)
 
     if auto_refresh:
         time.sleep(poll_interval)
@@ -1006,11 +888,11 @@ with tab3:
     if not live_mode:
         if profile.demo_words:
             snap = profile.build_snapshot(profile.demo_words)
-            st.info("Demo data — switch to **Live Serial** to poll hardware.")
+            st.caption("Demo data — switch to Live Serial to poll hardware.")
         else:
             st.warning("No demo data defined for this profile.")
     elif do_poll or auto_refresh:
-        with st.spinner(f"Polling {port} @ {baud} baud …"):
+        with st.spinner(f"Polling {port} @ {baud}..."):
             words = poll_chunks(port, int(baud), int(slave_id),
                                 FC_READ_INPUT, profile.input_chunks,
                                 float(timeout), int(retries), 0.12)
@@ -1020,59 +902,58 @@ with tab3:
             st.error("No response from inverter. Check cable, port, and baud rate.")
 
     if snap is None:
-        st.info("Press **Poll Now** or enable **Auto-refresh** to load data.")
+        st.info("Press 'Poll now' or enable Auto-refresh to load data.")
         st.stop()
 
-    # Update trend history
-    h = st.session_state.history
+    h  = st.session_state.history
+    lk = profile.lookups
+
     h["ts"].append(snap["timestamp"].strftime("%H:%M:%S"))
     h["pv_power"].append(snap.get("pv_total", 0))
     h["bat_power"].append(snap.get("bat_power") or 0)
     h["grid_power"].append(snap.get("grid_power") or 0)
     h["soc"].append(snap.get("soc", 0))
 
-    lk = profile.lookups
-
-    # ── Status strip ───────────────────────────────────────────────────────
-    _section("System Status")
+    # Status strip
+    _section("Status")
     s1, s2, s3, s4, s5, s6 = st.columns(6)
-    s1.metric("Run Mode",   lk.get("run_mode",   {}).get(snap["run_mode"],   f"?({snap['run_mode']})"))
-    s2.metric("Grid",       lk.get("grid_status",{}).get(snap["grid_status"],"?"))
-    s3.metric("Battery",    lk.get("bdc_status", {}).get(snap["bdc_status"], "?"))
+    s1.metric("Run Mode",   lk.get("run_mode",    {}).get(snap["run_mode"],    str(snap["run_mode"])))
+    s2.metric("Grid",       lk.get("grid_status", {}).get(snap["grid_status"], "—"))
+    s3.metric("Battery",    lk.get("bdc_status",  {}).get(snap["bdc_status"],  "—"))
     s4.metric("Inv Temp",   _fmt(snap.get("inv_temp"), "°C"))
-    s5.metric("BMS",        lk.get("bms_connected",{}).get(snap["bms_connected"],"?"))
+    s5.metric("BMS",        lk.get("bms_connected",{}).get(snap["bms_connected"],"—"))
     s6.metric("Last Poll",  snap["timestamp"].strftime("%H:%M:%S"))
 
     st.divider()
 
-    # ── PV ─────────────────────────────────────────────────────────────────
+    # PV
     _section("Solar PV")
     p1, p2, p3 = st.columns(3)
     with p1:
-        st.markdown("**String 1**")
+        st.caption("String 1")
         a, b, c = st.columns(3)
         a.metric("Voltage", _fmt(snap.get("pv1_voltage"), "V"))
         b.metric("Current", _fmt(snap.get("pv1_current"), "A"))
         c.metric("Power",   _fmt(snap.get("pv1_power"),   "W"))
     with p2:
-        st.markdown("**String 2**")
+        st.caption("String 2")
         a, b, c = st.columns(3)
         a.metric("Voltage", _fmt(snap.get("pv2_voltage"), "V"))
         b.metric("Current", _fmt(snap.get("pv2_current"), "A"))
         c.metric("Power",   _fmt(snap.get("pv2_power"),   "W"))
     with p3:
-        st.markdown("**Combined**")
-        st.metric("Total PV Power", _fmt(snap.get("pv_total"), "W"))
-        st.metric("Solar Today",    _fmt(snap.get("solar_today"), "kWh"))
+        st.caption("Combined")
+        st.metric("Total Power", _fmt(snap.get("pv_total"),    "W"))
+        st.metric("Solar Today", _fmt(snap.get("solar_today"), "kWh"))
 
     st.divider()
 
-    # ── Battery ────────────────────────────────────────────────────────────
+    # Battery
     _section("Battery")
     b1, b2, b3, b4, b5 = st.columns(5)
     b1.metric("Voltage",     _fmt(snap.get("bat_voltage"), "V"))
-    b2.metric("Current",     _fmt(snap.get("bat_current"), "A"), help="+chg / −dis")
-    b3.metric("Power",       _fmt(snap.get("bat_power"),   "W"), help="+chg / −dis")
+    b2.metric("Current",     _fmt(snap.get("bat_current"), "A"))
+    b3.metric("Power",       _fmt(snap.get("bat_power"),   "W"))
     b4.metric("Temperature", _fmt(snap.get("bat_temp"),   "°C"))
     b5.metric("SOC",         _fmt(snap.get("soc"),         "%"))
     _soc_bar(snap.get("soc", 0))
@@ -1084,42 +965,46 @@ with tab3:
     with bc2:
         cvh = snap.get("cell_v_high")
         cvl = snap.get("cell_v_low")
-        st.metric("Highest Cell V", _fmt(cvh, "V"))
-        st.metric("Lowest Cell V",  _fmt(cvl, "V"))
+        st.metric("Cell High", _fmt(cvh, "V"))
+        st.metric("Cell Low",  _fmt(cvl, "V"))
         if cvh is not None and cvl is not None:
             spread = round(cvh - cvl, 3)
-            st.metric("Cell Spread", _fmt(spread, "V"),
+            st.metric("Spread", _fmt(spread, "V"),
                       delta="OK" if spread < 0.05 else "High",
                       delta_color="normal" if spread < 0.05 else "inverse")
 
     st.divider()
 
-    # ── Grid ───────────────────────────────────────────────────────────────
-    _section("🔌  Grid")
+    # Grid
+    _section("Grid")
     g1, g2, g3, g4, g5 = st.columns(5)
     g1.metric("Voltage",   _fmt(snap.get("grid_voltage"),   "V"))
     g2.metric("Current",   _fmt(snap.get("grid_current"),   "A"))
     g3.metric("Power",     _fmt(snap.get("grid_power"),     "W"))
     g4.metric("Frequency", _fmt(snap.get("grid_frequency"), "Hz"))
     fi = snap.get("feedin_power")
-    g5.metric("Feed-in", (_fmt(abs(fi), "W") + (" ▲ Export" if fi >= 0 else " ▼ Import")) if fi is not None else "—")
+    if fi is not None:
+        fi_label = f"{abs(fi)} W  ({'Export' if fi >= 0 else 'Import'})"
+    else:
+        fi_label = "—"
+    g5.metric("Feed-in", fi_label)
 
     st.divider()
 
-    # ── Energy ─────────────────────────────────────────────────────────────
+    # Energy today
     _section("Energy Today")
     e1, e2, e3, e4 = st.columns(4)
-    e1.metric("Yield (AC)",    _fmt(snap.get("yield_today"),   "kWh"))
-    e2.metric("Solar",         _fmt(snap.get("solar_today"),   "kWh"))
-    e3.metric("Bat Charged",   _fmt(snap.get("echarge_today"), "kWh"))
-    e4.metric("Off-grid",      _fmt(snap.get("offgrid_today"), "kWh"))
+    e1.metric("Yield (AC)",   _fmt(snap.get("yield_today"),   "kWh"))
+    e2.metric("Solar",        _fmt(snap.get("solar_today"),   "kWh"))
+    e3.metric("Bat Charged",  _fmt(snap.get("echarge_today"), "kWh"))
+    e4.metric("Off-grid",     _fmt(snap.get("offgrid_today"), "kWh"))
 
     st.divider()
 
-    # ── Faults ─────────────────────────────────────────────────────────────
+    # Faults
     _section("Fault Status")
-    fault_maps = profile.fault_bit_maps
-    fault_cols = st.columns(max(len(fault_maps), 1))
+    fault_maps  = profile.fault_bit_maps
+    fault_cols  = st.columns(max(len(fault_maps), 1))
     for col, (title, bmap) in zip(fault_cols, fault_maps.items()):
         key = "inv_fault_word" if "Inv" in title else "bms_fault_word"
         with col:
@@ -1135,24 +1020,24 @@ with tab3:
 
     st.divider()
 
-    # ── Trend ──────────────────────────────────────────────────────────────
+    # Trend charts
     if len(h["ts"]) > 1:
-        _section("Trend  (last 60 polls)")
+        _section("Trend (last 60 polls)")
         df_trend = pd.DataFrame({
-            "Time":        list(h["ts"]),
-            "PV Power W":  list(h["pv_power"]),
-            "Bat Power W": list(h["bat_power"]),
-            "Grid Power W":list(h["grid_power"]),
-            "SOC %":       list(h["soc"]),
+            "Time":         list(h["ts"]),
+            "PV (W)":       list(h["pv_power"]),
+            "Battery (W)":  list(h["bat_power"]),
+            "Grid (W)":     list(h["grid_power"]),
+            "SOC (%)":      list(h["soc"]),
         }).set_index("Time")
         ch1, ch2 = st.columns(2)
-        ch1.line_chart(df_trend[["PV Power W", "Bat Power W", "Grid Power W"]], height=200)
-        ch2.line_chart(df_trend[["SOC %"]], height=200)
+        ch1.line_chart(df_trend[["PV (W)", "Battery (W)", "Grid (W)"]], height=200)
+        ch2.line_chart(df_trend[["SOC (%)"]], height=200)
 
-    # ── Raw dump ───────────────────────────────────────────────────────────
+    # Raw register dump
     words_raw = snap.get("_words", {})
     if words_raw:
-        with st.expander("🗄  Raw Register Dump"):
+        with st.expander("Raw register dump"):
             raw_df = pd.DataFrame([
                 {"Addr": f"0x{k:04X}", "Dec": k,
                  "uint16": v, "int16": as_int16(v), "Hex": f"0x{v:04X}"}
@@ -1162,29 +1047,29 @@ with tab3:
 
 
 # ╔══════════════════════════════════════════════════════════════════════════╗
-# ║  TAB 4 — BULK REGISTER SCAN                                            ║
+# ║  TAB 4 — BULK SCAN                                                     ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 with tab4:
-    st.markdown("##Bulk Register Scan")
+    st.markdown("#### Bulk Register Scan")
     st.caption(
-        "Scan a range of registers in chunks. "
-        "Useful for discovering unknown registers or verifying a full register map. "
+        "Scan a register range in chunks. "
+        "Useful for discovering unknown registers or verifying a full map. "
         "Results are decoded against the selected profile where possible."
     )
 
     if not live_mode:
-        st.warning("Bulk scan requires **Live Serial** mode.")
+        st.warning("Bulk scan requires Live Serial mode.")
         st.stop()
 
     sc1, sc2, sc3 = st.columns(3)
     with sc1:
         scan_fc_label = st.selectbox("Function Code", ["0x04 — Read Input", "0x03 — Read Holding"])
-        scan_fc  = int(scan_fc_label[:4], 16)
+        scan_fc = int(scan_fc_label[:4], 16)
     with sc2:
-        scan_start = st.text_input("Start Register (hex)", value="0000")
-        scan_end   = st.text_input("End Register (hex)",   value="00FF")
+        scan_start = st.text_input("Start (hex)", value="0000")
+        scan_end   = st.text_input("End (hex)",   value="00FF")
     with sc3:
-        scan_chunk = st.number_input("Chunk size (registers per request)", 1, 50, 20)
+        scan_chunk = st.number_input("Chunk size", 1, 50, 20)
         st.markdown("<br>", unsafe_allow_html=True)
         do_scan = st.button("Start Scan", use_container_width=True)
 
@@ -1197,7 +1082,7 @@ with tab4:
             st.stop()
 
         if end_a <= start_a:
-            st.error("End register must be greater than start.")
+            st.error("End must be greater than start.")
             st.stop()
 
         chunks = [
@@ -1225,7 +1110,7 @@ with tab4:
             time.sleep(0.12)
 
         if not all_words:
-            st.error("No data received during scan.")
+            st.error("No data received.")
             st.stop()
 
         rows = []
@@ -1235,8 +1120,8 @@ with tab4:
                 "uint16":  w,
                 "int16":   as_int16(w),
                 "Hex":     f"0x{w:04X}",
-                "×0.1":   round(w * 0.1, 1),
-                "×0.01":  round(w * 0.01, 2),
+                "x0.1":    round(w * 0.1, 1),
+                "x0.01":   round(w * 0.01, 2),
             }
             if addr in ref_map and profile:
                 reg    = ref_map[addr]
@@ -1252,19 +1137,10 @@ with tab4:
             rows.append(row)
 
         df_scan = pd.DataFrame(rows)
-        st.markdown(f"**{len(df_scan)} registers scanned**  "
-                    f"(0x{start_a:04X} – 0x{end_a:04X}, FC 0x{scan_fc:02X})")
+        st.markdown(f"{len(df_scan)} registers  (0x{start_a:04X} – 0x{end_a:04X}, FC 0x{scan_fc:02X})")
         st.dataframe(df_scan, use_container_width=True, hide_index=True)
-        st.download_button(
-            "Download CSV", df_scan.to_csv(index=False),
-            f"scan_{datetime.now():%Y%m%d_%H%M%S}.csv", "text/csv",
-        )
 
 
 # ── Footer ─────────────────────────────────────────────────────────────────
 st.divider()
-st.caption(
-    "🔌 Modbus RTU Inspector  |  "
-    "⚠️ EEprom registers have limited write cycles  |  "
-    "Min frame interval: **1 s**  ·  Inter-packet gap: **>100 ms**"
-)
+st.caption("Modbus RTU Inspector  |  Min frame interval: 1 s  |  EEprom registers have limited write cycles")
